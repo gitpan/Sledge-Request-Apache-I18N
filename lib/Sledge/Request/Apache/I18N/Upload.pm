@@ -9,7 +9,14 @@ use vars qw($AUTOLOAD);
 sub new {
     my $class = shift;
     my $r   = shift;
-    bless { upload => $r->req->upload(@_) }, $class;
+    my @upload = $r->req->upload(@_);
+    my @list;
+    for (@upload) {
+        next unless $_->size;
+        my $self = bless {upload => $_}, $class;
+        push @list, $self;
+    }
+    return wantarray ? @list : shift @list;
 }
 
 sub DESTROY { }

@@ -1,7 +1,7 @@
 package Sledge::Request::Apache::I18N;
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use base qw(Class::Accessor);
 __PACKAGE__->mk_accessors(qw(req));
@@ -26,7 +26,8 @@ sub param {
     if ( @_ == 0) {
         return map { $self->_decode_param($_) } $self->req->param;
     } elsif ( @_ == 1) {
-        return $self->_decode_param($self->req->param($_[0]));
+        my @value = map { $self->_decode_param($_) } $self->req->param($_[0]);
+        return wantarray ? @value : $value[0];
     } else {
         my ($key, $param) = @_;
         if (ref $param eq 'ARRAY') {
